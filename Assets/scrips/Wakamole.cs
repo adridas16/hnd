@@ -11,6 +11,7 @@ public class Wakamole : MonoBehaviour
     private void Awake()
     {
         HideMole();
+        transform.localPosition = myNewXYZPosition;
     }
     void Start()
     {

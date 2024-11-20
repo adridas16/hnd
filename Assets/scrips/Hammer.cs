@@ -1,3 +1,4 @@
+using Oculus.Interaction;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -14,9 +15,9 @@ public class Hammer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hammerDownRotation= Quaternion.Euler(hammerDownAngle,transform.rotation.y,transform.rotation.z);
-        hammerupRotation= Quaternion.Euler(hammerUpAngle,transform.rotation.y,transform.rotation.z);
-        
+        hammerDownRotation = Quaternion.Euler(hammerDownAngle, transform.rotation.y, transform.rotation.z);
+        hammerupRotation = Quaternion.Euler(hammerUpAngle, transform.rotation.y, transform.rotation.z);
+
     }
 
     // Update is called once per frame
@@ -27,33 +28,53 @@ public class Hammer : MonoBehaviour
         {
             if (hammerIsUp)
             {
-                SwingHammer(hammerUp: false, hammerRotation:hammerDownRotation);
+                SwingHammer(hammerUp: false, hammerRotation: hammerDownRotation);
             }
             else
             {
-                SwingHammer(hammerUp:true, hammerRotation: hammerupRotation);
+                SwingHammer(hammerUp: true, hammerRotation: hammerupRotation);
             }
         }
 
         if (!hammerIsUp)
         {
-            hammerDownMaxTime-= Time.deltaTime; 
-            if(hammerDownMaxTime <= 0f)
+            hammerDownMaxTime -= Time.deltaTime;
+            if (hammerDownMaxTime <= 0f)
             {
                 SwingHammer(hammerUp: true, hammerRotation: hammerupRotation);
             }
         }
     }
 
-    void SwingHammer(bool hammerUp,Quaternion hammerRotation)
+    void SwingHammer(bool hammerUp, Quaternion hammerRotation)
     {
-        hammerIsUp= hammerUp;
+        hammerIsUp = hammerUp;
 
-        transform.rotation= hammerRotation;
+        transform.rotation = hammerRotation;
 
         if (hammerIsUp)
         {
             hammerDownMaxTime = 0.25f;
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Mole")
+        {
+            Wakamole moleHit = collision.gameObject.GetComponent<Wakamole>();
+            
+            moleHit.HideMole();
+            Debug.Log("hit");
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Mole")
+        {
+            Wakamole moleHit = other.gameObject.GetComponent<Wakamole>();
+
+            moleHit.HideMole();
+            Debug.Log("hit");
         }
     }
 }
